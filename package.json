@@ -1,6 +1,6 @@
 {
   "name": "@mikrostack/vir-react-query-provider",
-  "version": "0.7.1",
+  "version": "0.7.3",
   "description": "Integration between React Query and @mikrostack/vir",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -16,7 +16,7 @@
   "license": "ISC",
   "peerDependencies": {
     "@tanstack/react-query": "^5.87.4",
-    "@mikrostack/vir": "^0.7.2",
+    "@mikrostack/vir": "^0.7.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

@@ -1,6 +1,10 @@
 import { useRef, useEffect, useMemo } from "react";
 
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { UseQueryDataProviderOptions } from "../types";
 import { ReactQuerySelectorDataProvider } from "../provider/ReactQuerySelectorDataProvider";
 import { DataProvider, ListItem } from "@mikrostack/vir";
@@ -36,6 +40,7 @@ export function useQueryDataProvider<TData = any, TTransformed = TData>(
     hasSelector: boolean;
   };
 } {
+  const qClient = useQueryClient();
   const { selector, dependencies = [], ...queryOptions } = options;
 
   // Create stable data provider instance
@@ -72,19 +77,22 @@ export function useQueryDataProvider<TData = any, TTransformed = TData>(
   }, [memoizedSelector, dependencies, dataProvider]);
 
   // React Query setup
-  const queryResult = useQuery({
-    queryKey,
-    queryFn,
-    enabled: queryOptions.enabled,
-    refetchInterval: queryOptions.refetchInterval,
-    refetchIntervalInBackground: queryOptions.refetchIntervalInBackground,
-    staleTime: queryOptions.staleTime ?? 5000,
-    gcTime: queryOptions.gcTime ?? 300000,
-    retry: queryOptions.retry ?? 3,
-    refetchOnWindowFocus: queryOptions.refetchOnWindowFocus ?? false,
-    refetchOnMount: queryOptions.refetchOnMount ?? true,
-    placeholderData: queryOptions.placeholderData,
-  });
+  const queryResult = useQuery(
+    {
+      queryKey,
+      queryFn,
+      enabled: queryOptions.enabled,
+      refetchInterval: queryOptions.refetchInterval,
+      refetchIntervalInBackground: queryOptions.refetchIntervalInBackground,
+      staleTime: queryOptions.staleTime ?? 5000,
+      gcTime: queryOptions.gcTime ?? 300000,
+      retry: queryOptions.retry ?? 3,
+      refetchOnWindowFocus: queryOptions.refetchOnWindowFocus ?? false,
+      refetchOnMount: queryOptions.refetchOnMount ?? true,
+      placeholderData: queryOptions.placeholderData,
+    },
+    qClient
+  );
 
   const { data, isLoading, error, isRefetching } = queryResult;
 
