@@ -1,10 +1,6 @@
 import { useRef, useEffect, useMemo } from "react";
 
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UseQueryDataProviderOptions } from "../types";
 import { ReactQuerySelectorDataProvider } from "../provider/ReactQuerySelectorDataProvider";
 import { DataProvider, ListItem } from "@mikrostack/vir";
@@ -33,7 +29,9 @@ export function useQueryDataProvider<TData = any, TTransformed = TData>(
   options: UseQueryDataProviderOptions<TData, TTransformed> = {}
 ): {
   dataProvider: DataProvider<TTransformed>;
-  queryResult: UseQueryResult<TData[]>;
+  isLoading: boolean;
+  error: unknown;
+  isRefetching: boolean;
   selectorInfo: {
     rawCount: number;
     selectedCount: number;
@@ -136,9 +134,11 @@ export function useQueryDataProvider<TData = any, TTransformed = TData>(
   return useMemo(
     () => ({
       dataProvider,
-      queryResult,
+      isLoading,
+      error,
+      isRefetching,
       selectorInfo,
     }),
-    [dataProvider, queryResult, selectorInfo]
+    [dataProvider, isLoading, error, isRefetching, selectorInfo]
   );
 }
