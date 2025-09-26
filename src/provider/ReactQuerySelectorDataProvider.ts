@@ -142,6 +142,21 @@ export class ReactQuerySelectorDataProvider<TData = any, TTransformed = TData>
     return true;
   }
 
+  getOrderedIds = () => {
+    if (
+      this.isLoading &&
+      this.selectedItems.length === 0 &&
+      this.options.showPlaceholdersWhileLoading
+    ) {
+      return Array.from(
+        { length: this.options.placeholderCount },
+        (_, i) => `__placeholder-${i}`
+      );
+    }
+
+    return this.selectedItems.map(({ id }) => id);
+  };
+
   // DataProvider interface - operates on selected items
   getData(startIndex: number, endIndex: number): ListItem<TTransformed>[] {
     // Handle loading state
@@ -214,11 +229,15 @@ export class ReactQuerySelectorDataProvider<TData = any, TTransformed = TData>
   };
 
   getItemById(id: string): ListItem<TTransformed> | null {
-    if (id.startsWith("__placeholder-") || id === "__error-item") {
-      return null;
+    if (id.startsWith("__placeholder-")) {
+      return {
+        id,
+        content: { __isPlaceholder: true } as TTransformed,
+      };
     }
 
-    return this.selectedItems.find((item) => item.id === id) || null;
+    const item = this.selectedItems.find((item) => item.id === id);
+    return item || null;
   }
 
   // Enhanced method for data transition handling
